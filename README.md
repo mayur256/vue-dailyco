@@ -1,64 +1,65 @@
-# vue-dailyco
+# Vue + Daily call object (custom) video call demo
 
-This template should help get you started developing with Vue 3 in Vite.
+This project demonstrates how to build a custom video call with Daily's custom [call object](https://docs.staging.daily.co/call-object) mode using [Vue.js](https://vuejs.org/).
 
-## Recommended IDE Setup
+<img src="homescreen.png" alt="Demo home screen">
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+To view a deployed example of this demo, visit [https://vue-call-object.netlify.app](https://vue-call-object.netlify.app).
 
-## Type Support for `.vue` Imports in TS
+---
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## Running this demo locally
 
-## Customize configuration
+Clone this repo and, from the project directory, run:
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-pnpm install
+```bash
+npm install
+npm run dev
 ```
 
-### Compile and Hot-Reload for Development
+Open http://localhost:8080 to view it in the browser.
 
-```sh
-pnpm dev
-```
+## Getting set up with Daily
 
-### Type-Check, Compile and Minify for Production
+To use this demo, you will need a Daily room to join.
 
-```sh
-pnpm build
-```
+To get a Daily room URL, [create a Daily account](https://dashboard.daily.co/signup).
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+Once you have an account and are logged into the [Daily Dashboard](https://dashboard.daily.co), you can [create a new Daily room](https://dashboard.daily.co/rooms/create).
 
-```sh
-pnpm test:unit
-```
+Copy the new room's URL. You can use this in the form on the home page.
 
-### Run End-to-End Tests with [Playwright](https://playwright.dev)
+The room URL will be in the following format:
 
-```sh
-# Install browsers for the first run
-npx playwright install
+`https://<your-daily-domain>.daily.co/<room-name>`
 
-# When testing on CI, must build the project first
-pnpm build
+---
 
-# Runs the end-to-end tests
-pnpm test:e2e
-# Runs the tests only on Chromium
-pnpm test:e2e --project=chromium
-# Runs the tests of a specific file
-pnpm test:e2e tests/example.spec.ts
-# Runs the tests in debug mode
-pnpm test:e2e --debug
-```
+## Features
 
-### Lint with [ESLint](https://eslint.org/)
+This demo demonstrates how to build a video call in Vue with the following features:
 
-```sh
-pnpm lint
-```
+- multi-participant calls
+- local participant controls to:
+  - control camera and microphone devices
+  - share your screen (a limit of 1 screen share at a time is enforced here for simplicity)
+  - leave the current call
+- join any Daily call
+- set your username before joining the call
+
+### Ideas for expanding this demo
+
+Some features that could be added to this demo include:
+
+- Adding [prejoin UI](https://www.daily.co/blog/build-your-own-prejoin-call-ui-in-a-custom-daily-video-chat-app/) to test devices and see your local video before joining
+- Allowing users to create rooms via the app using Daily's [REST API](https://docs.staging.daily.co/reference/rest-api/rooms)
+- Managing meeting permissions via [room settings](https://docs.staging.daily.co/guides/controlling-who-joins-a-meeting), like making the call a [broadcast call](https://www.daily.co/blog/daily-prebuilt-broadcast-call-deep-dive/)
+
+---
+
+## Related blog posts/tutorials
+
+Learn more about this demo on the [Daily blog](https://www.daily.co/blog/tag/vue/).
+
+- [Build a custom video chat app with Daily and Vue.js](https://www.daily.co/blog/custom-video-chat-app-with-daily-and-vue/)
+- [Build a custom chat widget in Vue with Daily’s sendAppMessage](https://www.daily.co/blog/build-a-custom-chat-widget-with-vue-with-dailys-sendappmessage-method/)
