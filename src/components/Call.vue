@@ -3,8 +3,15 @@
 
     <main id="call-app">
         <home-screen v-if="appState === 'idle'" :join-call="joinCall" />
-        <call-tile v-else-if="appState === 'incall'" :leave-call="leaveCall" :name="name" :room-url="roomUrl"
-            :token="token" />
+        <call-tile
+            v-else-if="['incall', 'request_access'].includes(appState)"
+            :leave-call="leaveCall"
+            :name="name"
+            :room-url="roomUrl"
+            :token="token"
+            :app-state="appState"
+            :update-app-state="updateAppState"
+        />
     </main>
 </template>
 
@@ -27,6 +34,13 @@ export default {
             roomUrl: null,
             token: ""
         };
+    },
+
+    mounted() {
+        const query = this.$route.query;
+        if (query.userName) this.name = query.userName;
+        if (query.roomUrl) this.roomUrl = query.roomUrl;
+        if (query.appState) this.appState = query.appState;
     },
     methods: {
         /**
@@ -57,6 +71,10 @@ export default {
         joinWithoutToken() {
             alert("Joining without token")
             this.$router.push(`/pre-join?name=${this.name}&roomUrl=${this.roomUrl}`)
+        },
+
+        updateAppState(state) {
+            this.appState = state;
         }
     },
 };
