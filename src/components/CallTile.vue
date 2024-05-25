@@ -43,7 +43,7 @@
             </div>
           </div>
         </template>
-
+        
         <chat-tile :send-message="sendMessage" :messages="messages" />
       </div>
     </template>
@@ -96,8 +96,6 @@ export default {
     
     // Join the call with the name set in the Home.vue form
     co.join({ userName: this.name });
-
-    console.log(access)
 
     // Add call and participant event handler
     // Visit https://docs.daily.co/reference/daily-js/events for more event info
