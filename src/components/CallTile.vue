@@ -6,8 +6,8 @@
                 <loading-tile />
 
                 <div v-if="appState === 'request_access'">
-                <h5 style="color:white">Waiting for access!</h5>
-            </div>
+                    <h5 style="color:white">Waiting for access!</h5>
+                </div>
             </div>
         </template>
 
@@ -61,6 +61,8 @@ import VideoTile from "./VideoTile.vue";
 import ScreenshareTile from "./ScreenshareTile.vue";
 import LoadingTile from "./LoadingTile.vue";
 import PermissionsErrorMsg from "./PermissionsErrorMsg.vue";
+
+
 
 export default {
     name: "CallTile",
@@ -137,11 +139,15 @@ export default {
          * For example, track-started and track-stopped can be used
          * to register only video/audio/screen track changes.
          */
-        updateParticpants(e) {
+        async updateParticpants(e) {
             console.log("[EVENT] ", e);
             if (!this.callObject) return;
 
-            if (this.appState === "request_access") {
+            const roomMeta = await this.checkRoomMeta();
+            
+            const privateRoomAccess = this.appState === "request_access" && roomMeta?.privacy === "private";
+            
+            if (privateRoomAccess) {
                 this.loading = true;
                 this.requestRoomAccess();
             }
@@ -157,7 +163,8 @@ export default {
             } else if (!screen?.length && this.screen) {
                 this.screen = null;
             }
-            if (this.appState !== "request_access") this.loading = false;
+
+            if (!privateRoomAccess) this.loading = false;
         },
         // Add chat message to local message array
         updateMessages(e) {
@@ -251,6 +258,22 @@ export default {
 
         denyRoomAccess(id) {
             this.callObject.updateWaitingParticipant(id, { grantRequestedAccess: false })
+        },
+
+        async checkRoomMeta() {
+            try {
+                this.loading = true;
+                const room = await this.callObject.room();
+                const responseJson = await fetch(`${import.meta.env.VITE_DAILY_API_DOMAIN}/rooms/${room.name}`, {
+                    headers: {
+                        authorization: `Bearer ${import.meta.env.VITE_DAILY_API_KEY}`
+                    }
+                });
+                return await responseJson.json();
+                
+            } finally {
+                this.loading = false
+            }
         },
 
         async requestRoomAccess() {

@@ -56,11 +56,12 @@ export default {
             } else {
                 this.joinWithoutToken();
             }
-            // this.appState = "incall";
+            
         },
         // Reset app state to return to the home screen after leaving call
         leaveCall() {
             this.appState = "idle";
+            this.$router.replace({ query: null })
         },
 
         joinwithToken(token) {

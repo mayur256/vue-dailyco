@@ -1,8 +1,6 @@
 <template>
   <div class="card">
     <h2>Waiting for others!</h2>
-    <h3>Invite someone by sharing this link:</h3>
-    <p>{{ url }}</p>
   </div>
 </template>
 
