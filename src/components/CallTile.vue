@@ -43,7 +43,7 @@
             </div>
           </div>
         </template>
-        
+
         <chat-tile :send-message="sendMessage" :messages="messages" />
       </div>
     </template>
@@ -52,6 +52,8 @@
 
 <script>
 import daily from "@daily-co/daily-js";
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+
 
 import WaitingCard from "./WaitingCard.vue";
 import ChatTile from "./ChatTile.vue";
@@ -108,7 +110,9 @@ export default {
       // camera-error = device permissions issue
       .on("camera-error", this.handleDeviceError)
       // app-message handles receiving remote chat messages
-      .on("app-message", this.updateMessages);
+      .on("app-message", this.updateMessages)
+      .on("waiting-participant-added", this.handleWaitingParticipants)
+      .on("waiting-participant-updated", this.handleWaitingParticipants);
   },
   unmounted() {
     if (!this.callObject) return;
@@ -121,7 +125,9 @@ export default {
       .off("participant-left", this.updateParticpants)
       .off("error", this.handleError)
       .off("camera-error", this.handleDeviceError)
-      .off("app-message", this.updateMessages);
+      .off("app-message", this.updateMessages)
+      .off("waiting-participant-added", this.handleWaitingParticipants)
+      .off("waiting-participant-updated", this.handleWaitingParticipants);
   },
   methods: {
     /**
@@ -211,6 +217,10 @@ export default {
         this.leaveCall();
       });
     },
+
+    handleWaitingParticipants(event) {
+        console.log({ waiting: event })
+    }
   },
 };
 </script>
