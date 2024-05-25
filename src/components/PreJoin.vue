@@ -4,11 +4,15 @@
             <div class="col-md-8">
                 <label for="exampleFormControlInput1" class="form-label">Name</label>
                 <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com"
-                    :value="userName" />
+                    v-model="userName" />
             </div>
 
             <div class="col-md-4"><button type="button" class="btn btn-primary" @click="initJoin">Request to
                     Join</button></div>
+        </div>
+
+        <div v-if="isWaiting" class="d-flex mt-4">
+            <h5>Waiting for room owner to let you in!...</h5>
         </div>
     </main>
 </template>
@@ -22,7 +26,8 @@ export default {
         return {
             userName: "",
             roomUrl: "",
-            callObject: null
+            callObject: null,
+            isWaiting: false
         }
     },
     mounted() {
@@ -46,6 +51,7 @@ export default {
 
                 await this.callObject.leave();
                 await this.callObject.join({ userName: this.userName });
+                this.isWaiting = true;
                 
                 const { access } = this.callObject.accessState();
                 
@@ -58,6 +64,7 @@ export default {
                 });
 
                 if (granted) {
+                    this.waiting = false;
                     console.log('👋 Access granted');
                 } else {
                     console.log('❌ Access denied');

@@ -220,6 +220,17 @@ export default {
 
     handleWaitingParticipants(event) {
         console.log({ waiting: event })
+        const waitingParticipants = Object.values(this.callObject.waitingParticipants());
+        if (waitingParticipants.length > 0) {
+            Swal.fire({
+                position: "top-end",
+                title: `${waitingParticipants[0].name} wants to join the call`, 
+                allowOutsideClick: false,
+                showDenyButton: true,
+                confirmButtonText: "Allow",
+                denyButtonText: "Deny"
+            })
+        }
     }
   },
 };
