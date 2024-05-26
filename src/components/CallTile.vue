@@ -89,22 +89,21 @@ export default {
     },
     async mounted() {
         const option = {
-            url: this.roomUrl
+            url: this.roomUrl,
+            userName: this.name
         };
 
         if (this.token) option.token = this.token;
 
-        // Create instance of Daily call object
-        const co = daily.createCallObject(option);
         // Assign in data obj for future reference
-        this.callObject = co;
+        this.callObject = window.dailyCo;
 
         // Join the call with the name set in the Home.vue form
-        this.callObject.join({ userName: this.name });
+        this.callObject.join(option);
 
         // Add call and participant event handler
         // Visit https://docs.daily.co/reference/daily-js/events for more event info
-        co.on("joining-meeting", this.handleJoiningMeeting)
+        this.callObject.on("joining-meeting", this.handleJoiningMeeting)
             .on("joined-meeting", this.updateParticpants)
             .on("participant-joined", this.updateParticpants)
             .on("participant-updated", this.updateParticpants)
@@ -264,6 +263,7 @@ export default {
             try {
                 this.loading = true;
                 const room = await this.callObject.room();
+                
                 const responseJson = await fetch(`${import.meta.env.VITE_DAILY_API_DOMAIN}/rooms/${room.name}`, {
                     headers: {
                         authorization: `Bearer ${import.meta.env.VITE_DAILY_API_KEY}`

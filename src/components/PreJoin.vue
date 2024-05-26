@@ -106,10 +106,8 @@ export default {
         this.userName = this.$route.query.name;
         this.roomUrl = this.$route.query.roomUrl;
 
-        // Create instance of Daily call object
-        const co = daily.createCallObject();
         // Assign in data obj for future reference
-        this.callObject = co;
+        this.callObject = window.dailyCo;
 
         this.setupPrejoinScreen();
 
@@ -166,7 +164,7 @@ export default {
         async setupPrejoinScreen() {
             this.getDevices();
 
-            await this.callObject.preAuth({ url: this.roomUrl });
+            // await this.callObject.preAuth({ url: this.roomUrl });
             await this.callObject.startCamera();
 
             this.participant = this.callObject.participants().local;
