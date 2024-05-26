@@ -21,6 +21,8 @@
         :participant="participant"
         :leave-call="leaveCall"
         :disable-screen-share="disableScreenShare"
+        :hide-leave-call="hideLeaveCall"
+        :hide-screen-share="hideScreenShare"
       />
     </template>
   </div>
@@ -43,6 +45,8 @@ export default {
     "handleScreenshareClick",
     "leaveCall",
     "disableScreenShare",
+    "hideLeaveCall",
+    "hideScreenShare"
   ],
   data() {
     return {
@@ -65,14 +69,15 @@ export default {
   },
   methods: {
     // Add srcObject to video element
-    handleVideo() {
+    async handleVideo() {
       const p = this.participant;
 
       // If the participant has their video off,
       // early out.
       if (!p?.video) return;
 
-      const track = p.tracks.video.persistentTrack;
+      const track = await p.tracks.video.persistentTrack;
+      
       const newStream = this.updateSource(this.videoSource, track);
       if (newStream) {
         this.videoSource = newStream;
@@ -80,13 +85,13 @@ export default {
     },
 
     // Add srcObject to audio element
-    handleAudio() {
+    async handleAudio() {
       const p = this.participant;
       // If the participant is local or has their audio off,
       // early out.
       if (!p || p.local || !p.audio) return;
 
-      const track = p.tracks.audio.persistentTrack;
+      const track = await p.tracks.audio.persistentTrack;
       const newStream = this.updateSource(this.audioSource, track);
       if (newStream) {
         this.audioSource = newStream;

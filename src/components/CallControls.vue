@@ -19,14 +19,14 @@
         </template>
       </button>
 
-      <template v-if="supportsScreenshare">
+      <template v-if="!hideScreenShare && supportsScreenshare">
         <button :disabled="disableScreenShare" @click="handleScreenshareClick">
           <img class="icon" :src="screenShare" alt="" />
         </button>
       </template>
     </div>
 
-    <button class="leave" @click="leaveCall">
+    <button class="leave" v-if="!hideLeaveCall" @click="leaveCall">
       <img class="icon" :src="leave" alt="" />
     </button>
   </div>
@@ -51,6 +51,8 @@ export default {
     "handleScreenshareClick",
     "leaveCall",
     "disableScreenShare",
+    "hideLeaveCall",
+    "hideScreenShare"
   ],
   data() {
     return {

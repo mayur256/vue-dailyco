@@ -2,8 +2,14 @@
     <main class="container-fluid mt-4 d-flex justify-content-center">
 
         <div class="card w-50">
-            <div class="card-img-top">
-
+            <div class="card-img-top" v-if="participant">
+                <video-tile
+                    :participant="participant"
+                    :handle-video-click="handleVideoClick"
+                    :handle-audio-click="handleAudioClick"
+                    :hide-leave-call="true"
+                    :hide-screen-share="true"
+                />
             </div>
             <div class="card-body">
 
@@ -78,8 +84,13 @@
 <script>
 import daily from "@daily-co/daily-js";
 
+import VideoTile from "./VideoTile.vue";
+
 export default {
     name: "PreJoin",
+    components: {
+        VideoTile
+    },
     data() {
         return {
             userName: "",
@@ -87,7 +98,8 @@ export default {
             callObject: null,
             audioIn: [],
             audioOut: [],
-            videoIn: []
+            videoIn: [],
+            participant: null
         }
     },
     mounted() {
@@ -100,7 +112,20 @@ export default {
         this.callObject = co;
 
         this.setupPrejoinScreen();
+
+        this.callObject
+            .on("participant-joined", this.updateParticpants)
+            .on("participant-updated", this.updateParticpants)
+            .on("participant-left", this.updateParticpants)
     },
+
+    unmounted() {
+        this.callObject
+            .off("participant-joined", this.updateParticpants)
+            .off("participant-updated", this.updateParticpants)
+            .off("participant-left", this.updateParticpants)
+    },
+
     methods: {
         async initJoin() {
             this.$router.push({
@@ -138,8 +163,13 @@ export default {
             }
         },
 
-        setupPrejoinScreen() {
+        async setupPrejoinScreen() {
             this.getDevices();
+
+            await this.callObject.preAuth({ url: this.roomUrl });
+            await this.callObject.startCamera();
+
+            this.participant = this.callObject.participants().local;
         },
 
         updateMic(e) {
@@ -152,6 +182,22 @@ export default {
 
         updateCamera(e) {
             this.callObject.setInputDevicesAsync({ videoDeviceId: e.target.value });
+        },
+
+        async handleVideoClick() {
+            const videoOn = this.callObject.localVideo();
+            await this.callObject.setLocalVideo(!videoOn);
+            this.participant = this.callObject.participants().local;
+        },
+
+        handleAudioClick() {
+            const audioOn = this.callObject.localAudio();
+            this.callObject.setLocalAudio(!audioOn);
+        },
+
+        updateParticpants(e) {
+            console.log("participant-updated", e)
+            this.participant = e.participant;
         }
     }
 }
